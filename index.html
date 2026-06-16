@@ -313,6 +313,26 @@
       .nav-links { display: none; }
       .footer-grid { grid-template-columns: 1fr; }
     }
+
+    /* ── ANIMATIONS ── */
+    [data-reveal] {
+      opacity: 0;
+      transform: translateY(32px);
+      transition:
+        opacity 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        transform 0.8s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+      will-change: opacity, transform;
+    }
+    [data-reveal="left"] { transform: translateX(-32px); }
+    [data-reveal="right"] { transform: translateX(32px); }
+    [data-reveal="scale"] { transform: translateY(24px) scale(0.97); }
+    [data-reveal].is-visible {
+      opacity: 1;
+      transform: none;
+    }
+    @media (prefers-reduced-motion: reduce) {
+      [data-reveal] { opacity: 1; transform: none; transition: none; }
+    }
   </style>
 </head>
 <body>
@@ -341,9 +361,9 @@
   <div class="container">
     <div class="hero-inner">
       <div class="hero-left">
-        <h1 data-i18n="hero.title">Energy Performance Certificates Across Cyprus</h1>
-        <p data-i18n="hero.desc">Certified EPC services for residential and commercial properties. Fast, compliant and hassle-free.</p>
-        <div class="hero-features">
+        <h1 data-reveal data-i18n="hero.title">Energy Performance Certificates Across Cyprus</h1>
+        <p data-reveal data-i18n="hero.desc">Certified EPC services for residential and commercial properties. Fast, compliant and hassle-free.</p>
+        <div data-reveal class="hero-features">
           <div class="hero-feature">
             <svg width="20" height="20" viewBox="0 0 20 20" fill="none"><circle cx="10" cy="10" r="10" fill="#ff8a2b" opacity=".15"/><path d="M6 10l3 3 5-5" stroke="#ff8a2b" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
             <span data-i18n="hero.f1">Licensed Experts</span>
@@ -361,14 +381,14 @@
             <span data-i18n="hero.f4">Residential &amp; Commercial</span>
           </div>
         </div>
-        <div class="hero-cta">
+        <div data-reveal class="hero-cta">
           <a href="#quote" class="btn-primary" data-i18n="hero.cta1">Get Quote</a>
           <a href="#contact" class="btn-outline" data-i18n="hero.cta2">Contact Expert</a>
         </div>
       </div>
 
       <!-- Quote form -->
-      <div class="quote-card" id="quote">
+      <div data-reveal="right" class="quote-card" id="quote">
         <h3 data-i18n="quote.title">Get Your Quote</h3>
         <p class="sub" data-i18n="quote.sub">Fill in the details for instant estimate</p>
         <div class="form-group">
@@ -420,22 +440,22 @@
 <section class="features">
   <div class="container">
     <div class="features-grid">
-      <div class="feature-card">
+      <div data-reveal class="feature-card" style="transition-delay:.05s">
         <div class="feature-icon">🏅</div>
         <h4 data-i18n="feat.t1">Certified Engineers</h4>
         <p data-i18n="feat.d1">All assessments conducted by licensed and certified energy professionals</p>
       </div>
-      <div class="feature-card">
+      <div data-reveal class="feature-card" style="transition-delay:.15s">
         <div class="feature-icon">⚡</div>
         <h4 data-i18n="feat.t2">Fast Delivery</h4>
         <p data-i18n="feat.d2">Receive your energy certificate within 3–5 business days</p>
       </div>
-      <div class="feature-card">
+      <div data-reveal class="feature-card" style="transition-delay:.25s">
         <div class="feature-icon">🗺️</div>
         <h4 data-i18n="feat.t3">Nationwide Coverage</h4>
         <p data-i18n="feat.d3">Serving all districts across Cyprus with equal quality standards</p>
       </div>
-      <div class="feature-card">
+      <div data-reveal class="feature-card" style="transition-delay:.35s">
         <div class="feature-icon">📋</div>
         <h4 data-i18n="feat.t4">Regulatory Compliance</h4>
         <p data-i18n="feat.d4">Full compliance with EU and Cyprus energy performance regulations</p>
@@ -447,27 +467,27 @@
 <!-- HOW IT WORKS -->
 <section class="how" id="how">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header" data-reveal>
       <h2 data-i18n="how.title">How It Works</h2>
       <p data-i18n="how.sub">Simple 4-step process to get your EPC certificate</p>
     </div>
     <div class="steps-grid">
-      <div class="step">
+      <div data-reveal class="step" style="transition-delay:.05s">
         <div class="step-num">1</div>
         <h4 data-i18n="how.s1t">Submit Request</h4>
         <p data-i18n="how.s1d">Complete our simple online form with your property details</p>
       </div>
-      <div class="step">
+      <div data-reveal class="step" style="transition-delay:.15s">
         <div class="step-num">2</div>
         <h4 data-i18n="how.s2t">Property Assessment</h4>
         <p data-i18n="how.s2d">Our certified engineer visits and inspects your property</p>
       </div>
-      <div class="step">
+      <div data-reveal class="step" style="transition-delay:.25s">
         <div class="step-num">3</div>
         <h4 data-i18n="how.s3t">Energy Evaluation</h4>
         <p data-i18n="how.s3d">Comprehensive analysis of energy performance and efficiency</p>
       </div>
-      <div class="step">
+      <div data-reveal class="step" style="transition-delay:.35s">
         <div class="step-num">4</div>
         <h4 data-i18n="how.s4t">Receive Certificate</h4>
         <p data-i18n="how.s4d">Get your official EPC certificate delivered digitally</p>
@@ -479,27 +499,27 @@
 <!-- SERVICES -->
 <section class="services" id="services">
   <div class="container">
-    <div class="section-header">
+    <div class="section-header" data-reveal>
       <h2 data-i18n="srv.title">Our Services</h2>
       <p data-i18n="srv.sub">Comprehensive energy certification solutions for every property type</p>
     </div>
     <div class="services-grid">
-      <div class="service-card">
+      <div data-reveal="left" class="service-card" style="transition-delay:.05s">
         <div class="service-icon">📄</div>
         <h3 data-i18n="srv.t1">Energy Performance Certificates</h3>
         <p data-i18n="srv.d1">Official EPC certification for property sales, rentals, and regulatory compliance. Valid documentation accepted by all Cyprus authorities.</p>
       </div>
-      <div class="service-card">
+      <div data-reveal="right" class="service-card" style="transition-delay:.15s">
         <div class="service-icon">🔍</div>
         <h3 data-i18n="srv.t2">Energy Studies</h3>
         <p data-i18n="srv.d2">Comprehensive energy audits and improvement recommendations to optimize your property's energy efficiency and reduce operating costs.</p>
       </div>
-      <div class="service-card">
+      <div data-reveal="left" class="service-card" style="transition-delay:.1s">
         <div class="service-icon">🏗️</div>
         <h3 data-i18n="srv.t3">Building Energy Assessments</h3>
         <p data-i18n="srv.d3">Detailed technical assessments of building envelope, HVAC systems, and energy consumption patterns for commercial and residential buildings.</p>
       </div>
-      <div class="service-card">
+      <div data-reveal="right" class="service-card" style="transition-delay:.2s">
         <div class="service-icon">💶</div>
         <h3 data-i18n="srv.t4">Subsidy &amp; Compliance Support</h3>
         <p data-i18n="srv.d4">Expert guidance on available government subsidies for energy upgrades and full support for meeting all regulatory requirements.</p>
@@ -512,7 +532,7 @@
 <section class="contact" id="contact">
   <div class="container">
     <div class="contact-inner">
-      <div class="contact-left">
+      <div data-reveal="left" class="contact-left">
         <h2 data-i18n="con.title">Have Questions?</h2>
         <p data-i18n="con.sub">Our experts will help you choose the right service and explain the certification process.</p>
         <div class="contact-info">
@@ -530,7 +550,7 @@
           </div>
         </div>
       </div>
-      <div class="contact-form">
+      <div data-reveal="right" class="contact-form">
         <div class="form-group">
           <label data-i18n="con.name">Your Name</label>
           <input type="text" data-i18n-ph="con.namePh" placeholder="Full name" />
@@ -560,9 +580,9 @@
 <!-- CTA BANNER -->
 <section class="cta-banner">
   <div class="container">
-    <h2 data-i18n="cta.title">Need an EPC Certificate?</h2>
-    <p data-i18n="cta.sub">Get a quote in just a few minutes.</p>
-    <a href="#quote" class="btn-white" data-i18n="cta.btn">Get Started</a>
+    <h2 data-reveal data-i18n="cta.title">Need an EPC Certificate?</h2>
+    <p data-reveal data-i18n="cta.sub">Get a quote in just a few minutes.</p>
+    <a data-reveal href="#quote" class="btn-white" data-i18n="cta.btn">Get Started</a>
   </div>
 </section>
 
@@ -612,6 +632,18 @@
 </footer>
 
 <script>
+// ── Reveal on scroll ──
+const observer = new IntersectionObserver((entries) => {
+  entries.forEach(entry => {
+    if (entry.isIntersecting) {
+      entry.target.classList.add('is-visible');
+      observer.unobserve(entry.target);
+    }
+  });
+}, { threshold: 0.12, rootMargin: '0px 0px -40px 0px' });
+
+document.querySelectorAll('[data-reveal]').forEach(el => observer.observe(el));
+
 const translations = {
   en: {
     'nav.services': 'Services',

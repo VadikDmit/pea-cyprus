@@ -382,6 +382,14 @@
       .burger { display: flex; }
     }
 
+    /* Form success message */
+    .form-success {
+      margin-top: 12px; padding: 12px 16px;
+      background: #f0fdf4; border: 1px solid #bbf7d0; border-radius: 8px;
+      color: #16a34a; font-size: 14px; font-weight: 500; text-align: center;
+    }
+    .btn-blue:disabled { opacity: .6; cursor: not-allowed; }
+
     /* ── ANIMATIONS ── */
     [data-reveal] {
       opacity: 0;
@@ -494,7 +502,7 @@
         </div>
         <div class="form-group">
           <label data-i18n="quote.size">Property Size (m²)</label>
-          <input type="number" data-i18n-ph="quote.sizePh" placeholder="e.g., 120" />
+          <input id="quoteSize" type="number" data-i18n-ph="quote.sizePh" placeholder="e.g., 120" />
         </div>
         <div class="form-group">
           <label data-i18n="quote.location">Location</label>
@@ -514,9 +522,10 @@
         </div>
         <div class="form-group">
           <label data-i18n="quote.email">Contact Email</label>
-          <input type="email" placeholder="your@email.com" />
+          <input id="quoteEmail" type="email" placeholder="your@email.com" />
         </div>
-        <button class="btn-blue" data-i18n="quote.btn">Calculate Price</button>
+        <button class="btn-blue" id="quoteSubmit" data-i18n="quote.btn">Calculate Price</button>
+        <div class="form-success" id="quoteSuccess" style="display:none"></div>
       </div>
     </div>
   </div>
@@ -639,25 +648,26 @@
       <div data-reveal="right" class="contact-form">
         <div class="form-group">
           <label data-i18n="con.name">Your Name</label>
-          <input type="text" data-i18n-ph="con.namePh" placeholder="Full name" />
+          <input id="conName" type="text" data-i18n-ph="con.namePh" placeholder="Full name" />
         </div>
         <div class="form-group">
           <label data-i18n="con.phone">Phone Number</label>
-          <input type="tel" placeholder="+357" />
+          <input id="conPhone" type="tel" placeholder="+357" />
         </div>
         <div class="form-group">
           <label data-i18n="con.email">Email Address</label>
-          <input type="email" placeholder="your@email.com" />
+          <input id="conEmail" type="email" placeholder="your@email.com" />
         </div>
         <div class="form-group">
           <label data-i18n="con.msg">Message</label>
-          <textarea data-i18n-ph="con.msgPh" placeholder="Tell us about your property and requirements…"></textarea>
+          <textarea id="conMsg" data-i18n-ph="con.msgPh" placeholder="Tell us about your property and requirements…"></textarea>
         </div>
         <div class="checkbox-row">
           <input type="checkbox" id="privacy" />
           <label for="privacy"><span data-i18n="con.privacy">I agree to the</span> <a href="#" data-i18n="con.privacyLink">Privacy Policy</a></label>
         </div>
-        <button class="btn-blue" data-i18n="con.btn">Send Message</button>
+        <button class="btn-blue" id="contactSubmit" data-i18n="con.btn">Send Message</button>
+        <div class="form-success" id="contactSuccess" style="display:none"></div>
       </div>
     </div>
   </div>
@@ -718,6 +728,68 @@
 </footer>
 
 <script>
+// ── Form submissions via Formspree ──
+const FORMSPREE_ID = 'mnjyrlkp';
+
+async function submitForm(endpoint, data, btnEl, successEl) {
+  btnEl.disabled = true;
+  const origText = btnEl.textContent;
+  btnEl.textContent = '…';
+  try {
+    const res = await fetch(`https://formspree.io/f/${endpoint}`, {
+      method: 'POST',
+      headers: { 'Accept': 'application/json', 'Content-Type': 'application/json' },
+      body: JSON.stringify(data)
+    });
+    if (res.ok) {
+      successEl.textContent = currentLang === 'el'
+        ? 'Ευχαριστούμε! Θα επικοινωνήσουμε σύντομα.'
+        : 'Thank you! We will get back to you shortly.';
+      successEl.style.display = 'block';
+      btnEl.style.display = 'none';
+    } else {
+      throw new Error();
+    }
+  } catch {
+    btnEl.textContent = origText;
+    btnEl.disabled = false;
+    alert(currentLang === 'el'
+      ? 'Σφάλμα αποστολής. Δοκιμάστε ξανά.'
+      : 'Submission error. Please try again.');
+  }
+}
+
+// Quote form
+document.getElementById('quoteSubmit').addEventListener('click', () => {
+  const typeEl = document.querySelector('#cs-type .cs-value');
+  const locEl  = document.querySelector('#cs-location .cs-value');
+  const size   = document.getElementById('quoteSize').value.trim();
+  const email  = document.getElementById('quoteEmail').value.trim();
+  if (!email) { alert('Please enter your email.'); return; }
+  submitForm(FORMSPREE_ID, {
+    form: 'Quote Request',
+    property_type: typeEl.classList.contains('selected') ? typeEl.textContent : '—',
+    property_size: size || '—',
+    location: locEl.classList.contains('selected') ? locEl.textContent : '—',
+    email
+  }, document.getElementById('quoteSubmit'), document.getElementById('quoteSuccess'));
+});
+
+// Contact form
+document.getElementById('contactSubmit').addEventListener('click', () => {
+  const name  = document.getElementById('conName').value.trim();
+  const phone = document.getElementById('conPhone').value.trim();
+  const email = document.getElementById('conEmail').value.trim();
+  const msg   = document.getElementById('conMsg').value.trim();
+  const agree = document.getElementById('privacy').checked;
+  if (!name || !email || !msg) { alert('Please fill in all required fields.'); return; }
+  if (!agree) { alert('Please agree to the Privacy Policy.'); return; }
+  submitForm(FORMSPREE_ID, {
+    form: 'Contact Message',
+    name, phone, email, message: msg
+  }, document.getElementById('contactSubmit'), document.getElementById('contactSuccess'));
+});
+
 // ── Burger menu ──
 const burger = document.getElementById('burger');
 const mobileMenu = document.getElementById('mobileMenu');

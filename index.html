@@ -312,6 +312,61 @@
       .steps-grid { grid-template-columns: repeat(2, 1fr); }
       .footer-grid { grid-template-columns: 1fr 1fr; }
     }
+    /* Hamburger button */
+    .burger {
+      display: none;
+      flex-direction: column; justify-content: center; align-items: center;
+      width: 40px; height: 40px; cursor: pointer;
+      background: none; border: none; padding: 4px; gap: 5px;
+    }
+    .burger span {
+      display: block; width: 22px; height: 2px;
+      background: var(--dark); border-radius: 2px;
+      transition: transform 0.3s cubic-bezier(0.25,0.46,0.45,0.94),
+                  opacity 0.2s ease;
+      transform-origin: center;
+    }
+    .burger.open span:nth-child(1) { transform: translateY(7px) rotate(45deg); }
+    .burger.open span:nth-child(2) { opacity: 0; transform: scaleX(0); }
+    .burger.open span:nth-child(3) { transform: translateY(-7px) rotate(-45deg); }
+
+    /* Mobile drawer */
+    .mobile-menu {
+      display: none;
+      position: fixed; inset: 0; top: 72px; z-index: 99;
+    }
+    .mobile-menu.open { display: block; }
+    .mobile-overlay {
+      position: absolute; inset: 0;
+      background: rgba(0,0,0,0.3);
+      animation: fadeIn 0.25s ease;
+    }
+    .mobile-drawer {
+      position: absolute; top: 0; right: 0;
+      width: 280px; height: 100%;
+      background: #fff;
+      padding: 24px;
+      display: flex; flex-direction: column; gap: 8px;
+      box-shadow: -4px 0 24px rgba(0,0,0,.1);
+      animation: slideIn 0.3s cubic-bezier(0.25,0.46,0.45,0.94);
+    }
+    .mobile-drawer a {
+      font-size: 16px; font-weight: 500; color: var(--dark);
+      padding: 12px 0;
+      border-bottom: 1px solid var(--border);
+      transition: color .2s;
+    }
+    .mobile-drawer a:last-of-type { border-bottom: none; }
+    .mobile-drawer a:hover { color: var(--orange); }
+    .mobile-drawer .mobile-lang {
+      display: flex; align-items: center; gap: 0;
+      border: 1.5px solid var(--border); border-radius: 8px;
+      overflow: hidden; margin-top: 8px; align-self: flex-start;
+    }
+    .mobile-drawer .mobile-lang .lang-btn { font-size: 13px; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes slideIn { from { transform: translateX(100%); } to { transform: translateX(0); } }
+
     @media (max-width: 768px) {
       .hero h1 { font-size: 36px; }
       .cta-banner h2 { font-size: 36px; }
@@ -319,6 +374,7 @@
       .contact-inner { grid-template-columns: 1fr; }
       .nav-links { display: none; }
       .footer-grid { grid-template-columns: 1fr; }
+      .burger { display: flex; }
     }
 
     /* ── ANIMATIONS ── */
@@ -359,9 +415,27 @@
           <button class="lang-btn" data-lang="el">GRE</button>
         </div>
       </div>
+      <button class="burger" id="burger" aria-label="Menu">
+        <span></span><span></span><span></span>
+      </button>
     </div>
   </div>
 </nav>
+
+<!-- MOBILE MENU -->
+<div class="mobile-menu" id="mobileMenu">
+  <div class="mobile-overlay" id="mobileOverlay"></div>
+  <div class="mobile-drawer">
+    <a href="#services" data-i18n="nav.services">Services</a>
+    <a href="#how" data-i18n="nav.how">How It Works</a>
+    <a href="#contact" data-i18n="nav.contact">Contact</a>
+    <div class="mobile-lang">
+      <button class="lang-btn active" data-lang="en">ENG</button>
+      <div class="lang-sep"></div>
+      <button class="lang-btn" data-lang="el">GRE</button>
+    </div>
+  </div>
+</div>
 
 <!-- HERO -->
 <section class="hero">
@@ -639,6 +713,21 @@
 </footer>
 
 <script>
+// ── Burger menu ──
+const burger = document.getElementById('burger');
+const mobileMenu = document.getElementById('mobileMenu');
+const mobileOverlay = document.getElementById('mobileOverlay');
+
+function toggleMenu(open) {
+  burger.classList.toggle('open', open);
+  mobileMenu.classList.toggle('open', open);
+  document.body.style.overflow = open ? 'hidden' : '';
+}
+
+burger.addEventListener('click', () => toggleMenu(!mobileMenu.classList.contains('open')));
+mobileOverlay.addEventListener('click', () => toggleMenu(false));
+mobileMenu.querySelectorAll('a').forEach(a => a.addEventListener('click', () => toggleMenu(false)));
+
 // ── Reveal on scroll ──
 const observer = new IntersectionObserver((entries) => {
   entries.forEach(entry => {
@@ -858,12 +947,13 @@ function applyLang(lang) {
   currentLang = lang;
 }
 
-// Language buttons
+// Language buttons (desktop + mobile in sync)
 document.querySelectorAll('.lang-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const lang = btn.getAttribute('data-lang');
-    document.querySelectorAll('.lang-btn').forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+    document.querySelectorAll('.lang-btn').forEach(b => {
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
     applyLang(lang);
   });
 });

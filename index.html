@@ -142,6 +142,11 @@
     }
     .hero-feature svg { flex-shrink: 0; }
     .hero-cta { display: flex; gap: 16px; flex-wrap: wrap; }
+    @media (max-width: 480px) {
+      .hero-cta { flex-direction: column; }
+      .hero-cta .btn-primary,
+      .hero-cta .btn-outline { width: 100%; justify-content: center; }
+    }
 
     /* Quote card */
     .quote-card {
